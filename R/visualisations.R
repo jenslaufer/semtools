@@ -4,7 +4,7 @@ distribution.quantitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_histogram() +
-    facet_grid( ~ feature, scales = "free")
+    facet_grid(~ feature, scales = "free")
 }
 
 
@@ -14,7 +14,7 @@ distribution.qualitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_bar() +
-    facet_grid( ~ feature, scales = "free")
+    facet_grid(~ feature, scales = "free")
 }
 
 keyword.plot <- function(data,
@@ -38,7 +38,7 @@ keyword.plot <- function(data,
     scale_y_continuous(trans = .y.trans)
   
   if (.labels) {
-    plot <- plot %>%
+    plot <- plot +
       geom_label_repel(aes(label = keyword))
   }
   plot
