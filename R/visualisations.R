@@ -4,7 +4,7 @@ distribution.quantitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_histogram() +
-    facet_grid( ~ feature, scales = "free")
+    facet_grid(~ feature, scales = "free")
 }
 
 
@@ -14,11 +14,13 @@ distribution.qualitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_bar() +
-    facet_grid( ~ feature, scales = "free")
+    facet_grid(~ feature, scales = "free")
 }
 
 keyword.plot <- function(data,
                          .alpha = 1,
+                         .x.trans = "log10",
+                         .y.trans = "log10",
                          bid.feature.name = "bid") {
   bid.feature <- sym(bid.feature.name)
   data %>%
@@ -32,6 +34,6 @@ keyword.plot <- function(data,
     geom_point(alpha = .alpha) +
     geom_label_repel(aes(label = keyword)) +
     scale_color_gradient(low = "#59a14f", high = "#bab0ac") +
-    scale_x_log10() +
-    scale_y_log10()
+    scale_x_continuous(trans = .x.trans) +
+    scale_y_continuous(trans = .y.trans)
 }
