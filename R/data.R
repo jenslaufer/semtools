@@ -1,11 +1,24 @@
-load.google.keywords <- function(.path) {
+load.keywords <- function(.files, .seed = F) {
+  tryCatch({
+    load.google.keywords(.files, .seed = F)
+  }, error = function(e) {
+    load.microsoft.keywords(.files, .seed = F)
+  })
+}
+
+
+load.google.keywords <- function(.files, .seed = F) {
   cols <-
     c("Avg..monthly.searches",
       "Min.search.volume",
       "Max.search.volume")
-  google <- list.files(path = .path,
-                       full.names = T,
-                       pattern = ".csv") %>%
+  if (dir.exists(.files)) {
+    .files <- list.files(path = .files,
+                         full.names = T,
+                         pattern = ".csv")
+  }
+  
+  .files %>%
     map(
       ~ read.delim(
         .,
@@ -44,10 +57,14 @@ load.google.keywords <- function(.path) {
     as_tibble()
 }
 
-load.microsoft.keywords <- function(.path, .seed = F) {
-  list.files(path = .path %>% glue(),
-             full.names = T,
-             pattern = ".csv") %>%
+load.microsoft.keywords <- function(.files, .seed = F) {
+  if (dir.exists(.files)) {
+    .files <- list.files(path = .files,
+                         full.names = T,
+                         pattern = ".csv")
+  }
+  
+  .files %>%
     map(
       ~ read.delim(., fileEncoding = 'UTF-16LE', stringsAsFactors = F) %>%
         mutate_if(is.numeric, as.character)
@@ -73,14 +90,14 @@ load.microsoft.keywords <- function(.path, .seed = F) {
     ) %>%
     mutate(provider = "microsoft", competition = competition * 100) %>%
     as_tibble()
-
+  
 }
 
 split.write <- function(data, folder, num.per.it = 998) {
   total.num <- data %>% count() %>% pull(n)
   num.it <- (total.num %/% num.per.it) + 1
-
-
+  
+  
   for (num in seq(0, num.it)) {
     start <- num * num.per.it + 1
     end <- (num + 1) * num.per.it
@@ -93,5 +110,5 @@ split.write <- function(data, folder, num.per.it = 998) {
         quote = F
       )
   }
-
+  
 }
