@@ -4,7 +4,7 @@ distribution.quantitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_histogram() +
-    facet_grid( ~ feature, scales = "free") +
+    facet_grid(~ feature, scales = "free") +
     labs(title = "Distribution")
 }
 
@@ -15,7 +15,7 @@ distribution.qualitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_bar() +
-    facet_grid( ~ feature, scales = "free")
+    facet_grid(~ feature, scales = "free")
 }
 
 keyword.plot <- function(data,
@@ -33,7 +33,7 @@ keyword.plot <- function(data,
       color = !!sym(bid.feature.name)
     )) +
     geom_point(aes(size = price.chance), alpha = .alpha) +
-    scale_colour_gradientn(colours = rev(terrain.colors(10))) +
+    scale_colour_gradientn(colours = terrain.colors(10)) +
     scale_x_continuous(trans = .x.trans) +
     scale_y_continuous(trans = .y.trans) +
     labs(title = "Average Monttly Searches vs Competition vs Bid Price")
