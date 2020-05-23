@@ -4,7 +4,7 @@ distribution.quantitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_histogram() +
-    facet_grid( ~ feature, scales = "free") +
+    facet_wrap( ~ feature, scales = "free") +
     labs(title = "Distribution")
 }
 
@@ -15,7 +15,7 @@ distribution.qualitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_bar() +
-    facet_grid( ~ feature, scales = "free")
+    facet_wrap( ~ feature, scales = "free")
 }
 
 keyword.plot <- function(data,
