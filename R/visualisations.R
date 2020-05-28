@@ -23,14 +23,18 @@ keyword.plot <- function(data,
                          .x.trans = "log10",
                          .y.trans = "log10",
                          .labels = T,
-                         bid.feature.name = "bid") {
-  bid.feature <- sym(bid.feature.name)
+                         x.feature.name = "avg.monthly.searches",
+                         y.feature.name = "competition",
+                         color.feature.name = "bid",
+                         size.feature.name = "bid.chance") {
   plot <- data %>%
-    ggplot(aes(x = avg.monthly.searches,
-               y = competition)) +
+    ggplot(aes(
+      x = sym(x.feature.name),
+      y = sym(y.feature.name)
+    )) +
     geom_point(aes(
-      size = 1 / !!sym(bid.feature.name),
-      color = !!sym(bid.feature.name)
+      size = !!sym(size.feature.name),
+      color = !!sym(color.feature.name)
     ), alpha = .alpha) +
     scale_colour_gradientn(colours = terrain.colors(10)) +
     scale_x_continuous(trans = .x.trans) +
