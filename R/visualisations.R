@@ -4,7 +4,7 @@ distribution.quantitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_histogram() +
-    facet_wrap( ~ feature, scales = "free") +
+    facet_wrap(~ feature, scales = "free") +
     labs(title = "Distribution")
 }
 
@@ -15,7 +15,7 @@ distribution.qualitative.plot <- function(data) {
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_bar() +
-    facet_wrap( ~ feature, scales = "free")
+    facet_wrap(~ feature, scales = "free")
 }
 
 keyword.plot <- function(data,
@@ -30,8 +30,8 @@ keyword.plot <- function(data,
                          title = "Average Monthly Searches vs Competition vs Bid Price") {
   plot <- data %>%
     ggplot(aes(
-      x = sym(x.feature.name),
-      y = sym(y.feature.name)
+      x = !!sym(x.feature.name),
+      y = !!sym(y.feature.name)
     )) +
     geom_point(aes(
       size = !!sym(size.feature.name),
