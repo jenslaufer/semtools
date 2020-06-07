@@ -1,4 +1,4 @@
-distribution.quantitative.plot <- function(data) {
+distribution.quantitative.plots <- function(data) {
   data %>%
     select_if(is.numeric) %>%
     gather(key = "feature", value = "value") %>%
@@ -8,14 +8,29 @@ distribution.quantitative.plot <- function(data) {
     labs(title = "Distribution")
 }
 
+distribution.quantitative.plot <- function(data, feature.name) {
+  data %>%
+    ggplot(aes(x = !!sym(feature.name))) +
+    geom_histogram() +
+    labs(title = "Distribution {feature.name}" %>% glue())
+}
 
-distribution.qualitative.plot <- function(data) {
+
+distribution.qualitative.plots <- function(data) {
   data %>%
     select_if(negate(is.numeric)) %>%
     gather(key = "feature", value = "value") %>%
     ggplot(aes(x = value)) +
     geom_bar() +
-    facet_wrap(~ feature, scales = "free")
+    facet_wrap(~ feature, scales = "free") +
+    labs(title = "Distribution")
+}
+
+distribution.qualitative.plot <- function(data, feature.name) {
+  data %>%
+    ggplot(aes(x = !!sym(feature.name))) +
+    geom_bar() +
+    labs(title = "Distribution {feature.name}" %>% glue())
 }
 
 keyword.plot <- function(data,
