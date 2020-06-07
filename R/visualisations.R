@@ -42,10 +42,6 @@ keyword.plot <- function(data,
     scale_size_continuous(guide = F) +
     labs(title = title)
   
-  if (is.numeric(!!sym(color.feature.name))) {
-    plot <- plot +
-      scale_colour_gradientn(colours = terrain.colors(10))
-  }
   
   if (.labels) {
     plot <- plot +
