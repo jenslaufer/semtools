@@ -8,7 +8,7 @@ distribution.quantitative.plots <- function(data) {
     labs(title = "Distribution")
 }
 
-distribution.quantitative.single.plot <- function(data, feature.name) {
+distribution.quantitative.plot <- function(data, feature.name) {
   data %>%
     ggplot(aes(x = !!sym(feature.name))) +
     geom_histogram() +
