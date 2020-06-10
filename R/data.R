@@ -18,43 +18,52 @@ load.google.keywords <- function(.files, .seed = F) {
                          pattern = ".csv")
   }
   
-  .files %>%
-    map(
-      ~ read.delim(
-        .,
-        fileEncoding = 'UTF-16LE',
-        stringsAsFactors = F,
-        skip = 2
+  
+  tryCatch({
+    .files %>%
+      map(
+        ~ read.delim(
+          .,
+          fileEncoding = 'UTF-16LE',
+          stringsAsFactors = F,
+          skip = 2
+        ) %>%
+          mutate_if(is.numeric, as.character) %>%
+          mutate_at(cols, funs(str_replace_all(., ",", "")))
       ) %>%
-        mutate_if(is.numeric, as.character) %>%
-        mutate_at(cols, funs(str_replace_all(., ",", "")))
-    ) %>%
-    bind_rows() %>%
-    distinct(Keyword, .keep_all = T) %>%
-    mutate_at(cols, funs(as.integer)) %>%
-    rename(
-      keyword = Keyword,
-      currency = Currency,
-      avg.monthly.searches = Avg..monthly.searches,
-      min.search.volume = Min.search.volume,
-      max.search.volume = Max.search.volume,
-      competition.quality = Competition,
-      competition = Competition..indexed.value.
-    ) %>%
-    mutate(
-      Top.of.page.bid..low.range. = as.numeric(Top.of.page.bid..low.range.),
-      Top.of.page.bid..high.range. = as.numeric(Top.of.page.bid..high.range.),
-      bid = (Top.of.page.bid..low.range. + Top.of.page.bid..high.range.) /
-        2,
-      avg.monthly.searches = ifelse(
-        is.na(avg.monthly.searches),
-        (min.search.volume + max.search.volume) / 2 ,
-        avg.monthly.searches
-      ),
-      competition = as.numeric(competition)
-    ) %>%
-    mutate(provider = "google") %>%
-    as_tibble()
+      bind_rows() %>%
+      distinct(Keyword, .keep_all = T) %>%
+      mutate_at(cols, funs(as.integer)) %>%
+      rename(
+        keyword = Keyword,
+        currency = Currency,
+        avg.monthly.searches = Avg..monthly.searches,
+        min.search.volume = Min.search.volume,
+        max.search.volume = Max.search.volume,
+        competition.quality = Competition,
+        competition = Competition..indexed.value.
+      ) %>%
+      mutate(
+        Top.of.page.bid..low.range. = as.numeric(Top.of.page.bid..low.range.),
+        Top.of.page.bid..high.range. = as.numeric(Top.of.page.bid..high.range.),
+        bid = (
+          Top.of.page.bid..low.range. + Top.of.page.bid..high.range.
+        ) /
+          2,
+        avg.monthly.searches = ifelse(
+          is.na(avg.monthly.searches),
+          (min.search.volume + max.search.volume) / 2 ,
+          avg.monthly.searches
+        ),
+        competition = as.numeric(competition)
+      ) %>%
+      mutate(provider = "google") %>%
+      as_tibble()
+  }, error = function(e) {
+    .files %>%
+      map(~ read_csv(.)) %>%
+      bind_rows()
+  })
 }
 
 load.microsoft.keywords <- function(.files, .seed = F) {
