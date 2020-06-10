@@ -64,32 +64,39 @@ load.microsoft.keywords <- function(.files, .seed = F) {
                          pattern = ".csv")
   }
   
-  .files %>%
-    map(
-      ~ read.delim(., fileEncoding = 'UTF-16LE', stringsAsFactors = F) %>%
-        mutate_if(is.numeric, as.character)
-    ) %>%
-    bind_rows() %>%
-    rename(Seed = Ad.group) %>%
-    mutate(Seed = ifelse(.seed == T &
-                           Seed == "Seed Keywords", Keyword, NA)) %>%
-    mutate(
-      `Average.monthly.searches` = as.numeric(`Average.monthly.searches`),
-      `Competition` = as.numeric(`Competition`),
-      `Suggested.bid..EUR.` = as.numeric(`Suggested.bid..EUR.`)
-    ) %>%
-    mutate(Seed = as.factor(na.locf(
-      Seed, fromLast = F, na.rm = F
-    ))) %>%
-    select(-Ad.impr..share) %>%
-    rename(
-      keyword = Keyword,
-      avg.monthly.searches = Average.monthly.searches,
-      competition = Competition,
-      bid = Suggested.bid..EUR.
-    ) %>%
-    mutate(provider = "microsoft", competition = competition * 100) %>%
-    as_tibble()
+  tryCatch({
+    .files %>%
+      map(
+        ~ read.delim(., fileEncoding = 'UTF-16LE', stringsAsFactors = F) %>%
+          mutate_if(is.numeric, as.character)
+      ) %>%
+      bind_rows() %>%
+      rename(Seed = Ad.group) %>%
+      mutate(Seed = ifelse(.seed == T &
+                             Seed == "Seed Keywords", Keyword, NA)) %>%
+      mutate(
+        `Average.monthly.searches` = as.numeric(`Average.monthly.searches`),
+        `Competition` = as.numeric(`Competition`),
+        `Suggested.bid..EUR.` = as.numeric(`Suggested.bid..EUR.`)
+      ) %>%
+      mutate(Seed = as.factor(na.locf(
+        Seed, fromLast = F, na.rm = F
+      ))) %>%
+      select(-Ad.impr..share) %>%
+      rename(
+        keyword = Keyword,
+        avg.monthly.searches = Average.monthly.searches,
+        competition = Competition,
+        bid = Suggested.bid..EUR.
+      ) %>%
+      mutate(provider = "microsoft", competition = competition * 100) %>%
+      as_tibble()
+  }, error = function(e) {
+    .files %>%
+      map(~ read_csv(.)) %>%
+      bind_rows()
+  })
+  
   
 }
 
