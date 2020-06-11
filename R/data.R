@@ -74,6 +74,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
   }
   
   tryCatch({
+    print("loading microsoft planner format data...")
     .files %>%
       map(
         ~ read.delim(., fileEncoding = 'UTF-16LE', stringsAsFactors = F) %>%
@@ -101,7 +102,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
       mutate(provider = "microsoft", competition = competition * 100) %>%
       as_tibble()
   }, error = function(e) {
-    print(e)
+    print("error try to load standard csv")
     .files %>%
       map(~ read_csv(.)) %>%
       bind_rows()
