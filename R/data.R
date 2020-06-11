@@ -101,6 +101,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
       mutate(provider = "microsoft", competition = competition * 100) %>%
       as_tibble()
   }, error = function(e) {
+    print(e)
     .files %>%
       map(~ read_csv(.)) %>%
       bind_rows()
