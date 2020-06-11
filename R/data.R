@@ -1,8 +1,8 @@
 load.keywords <- function(.files, .seed = F) {
   tryCatch({
-    load.google.keywords(.files, .seed = F)
-  }, error = function(e) {
     load.microsoft.keywords(.files, .seed = F)
+  }, error = function(e) {
+    load.google.keywords(.files, .seed = F)
   })
 }
 
@@ -61,7 +61,7 @@ load.google.keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -74,8 +74,8 @@ load.microsoft.keywords <- function(.files, .seed = F) {
   }
   
   tryCatch({
-    print("loading microsoft planner format data...")
-    .files %>%
+    loading.debug("loading microsoft planner format data...")
+    data <- .files %>%
       map(
         ~ read.delim(., fileEncoding = 'UTF-16LE', stringsAsFactors = F) %>%
           mutate_if(is.numeric, as.character)
@@ -101,11 +101,17 @@ load.microsoft.keywords <- function(.files, .seed = F) {
       ) %>%
       mutate(provider = "microsoft", competition = competition * 100) %>%
       as_tibble()
+    
+    loading.debug("loaded microsoft planner format data.")
+    data
   }, error = function(e) {
-    print("error try to load standard csv")
-    .files %>%
-      map(~ read_csv(.)) %>%
+    loading.debug("error try to load standard csv")
+    data <-
+      .files %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
+    
+    data
   })
   
   
