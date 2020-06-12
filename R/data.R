@@ -1,5 +1,6 @@
 load.keywords <- function(.files, .seed = F) {
   tryCatch({
+    logging::logdebug("microsoft")
     load.microsoft.keywords(.files, .seed = F)
   }, error = function(e) {
     load.google.keywords(.files, .seed = F)
@@ -74,7 +75,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
   }
   
   tryCatch({
-    loading.debug("loading microsoft planner format data...")
+    logdebug("loading microsoft planner format data...")
     data <- .files %>%
       map(
         ~ read.delim(., fileEncoding = 'UTF-16LE', stringsAsFactors = F) %>%
@@ -89,9 +90,6 @@ load.microsoft.keywords <- function(.files, .seed = F) {
         `Competition` = as.numeric(`Competition`),
         `Suggested.bid..EUR.` = as.numeric(`Suggested.bid..EUR.`)
       ) %>%
-      mutate(Seed = as.factor(na.locf(
-        Seed, fromLast = F, na.rm = F
-      ))) %>%
       select(-Ad.impr..share) %>%
       rename(
         keyword = Keyword,
@@ -99,13 +97,13 @@ load.microsoft.keywords <- function(.files, .seed = F) {
         competition = Competition,
         bid = Suggested.bid..EUR.
       ) %>%
-      mutate(provider = "microsoft", competition = competition * 100) %>%
-      as_tibble()
+      mutate(provider = "microsoft",
+             competition = competition * 100)
     
-    loading.debug("loaded microsoft planner format data.")
+    logdebug("loaded microsoft planner format data.")
     data
   }, error = function(e) {
-    loading.debug("error try to load standard csv")
+    logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
       map( ~ read_csv(.)) %>%
