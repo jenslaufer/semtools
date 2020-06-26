@@ -21,13 +21,16 @@ load.semrush.keywords <- function(.files) {
                          pattern = ".csv")
   }
   .files %>%
-    map( ~ read_csv(.)) %>%
+    map(~ read_csv(.)) %>%
     bind_rows() %>%
     rename(
       keyword = Keyword,
       avg.monthly.searches = Volume,
       competition = `Keyword Difficulty`,
-      bid = `CPC (USD)`
+      bid = `CPC (USD)`,
+      features = `SERP Features`,
+      competitive.density = `Competitive Density`,
+      number.results = `Number of Results`
     )
   
 }
@@ -87,7 +90,7 @@ load.google.keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -131,7 +134,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
     
     data
@@ -162,6 +165,4 @@ split.write <- function(data, folder, num.per.it = 998) {
 
 library(tidyverse)
 logging::basicConfig(level = 50)
-data <-
-  load.keywords("/home/jens/Repos/business-opportunities/data/en/SEMRush/calculators_tools/")
-data %>% colnames()
+load.keywords("/home/jens/Repos/business-opportunities/data/en/SEMRush/calculators_tools/") %>% colnames()
