@@ -1,13 +1,14 @@
 load.keywords <- function(.files, .seed = F) {
   tryCatch({
-    logging::logdebug("microsoft")
-    load.microsoft.keywords(.files, .seed = F)
+    logging::logdebug("semrush")
+    load.semrush.keywords(.files)
   }, error = function(e) {
     logging::logdebug("google")
     tryCatch({
       load.google.keywords(.files, .seed = F)
     }, error = function(e) {
-      load.semrush.keywords(.files)
+      logging::logdebug("microsoft")
+      load.microsoft.keywords(.files, .seed = F)
     })
     
   })
@@ -158,3 +159,9 @@ split.write <- function(data, folder, num.per.it = 998) {
   }
   
 }
+
+library(tidyverse)
+logging::basicConfig(level = 50)
+data <-
+  load.keywords("/home/jens/Repos/business-opportunities/data/en/SEMRush/calculators_tools/")
+data %>% colnames()
