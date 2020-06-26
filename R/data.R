@@ -3,8 +3,32 @@ load.keywords <- function(.files, .seed = F) {
     logging::logdebug("microsoft")
     load.microsoft.keywords(.files, .seed = F)
   }, error = function(e) {
-    load.google.keywords(.files, .seed = F)
+    logging::logdebug("google")
+    tryCatch({
+      load.google.keywords(.files, .seed = F)
+    }, error = function(e) {
+      load.semrush.keywords(.files)
+    })
+    
   })
+}
+
+load.semrush.keywords <- function(.files) {
+  if (dir.exists(.files)) {
+    .files <- list.files(path = .files,
+                         full.names = T,
+                         pattern = ".csv")
+  }
+  .files %>%
+    map( ~ read_csv(.)) %>%
+    bind_rows() %>%
+    rename(
+      keyword = Keyword,
+      avg.monthly.searches = Volume,
+      competition = `Keyword Difficulty`,
+      bid = `CPC (USD)`
+    )
+  
 }
 
 
@@ -62,7 +86,7 @@ load.google.keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map( ~ read_csv(.)) %>%
+      map(~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -106,7 +130,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map( ~ read_csv(.)) %>%
+      map(~ read_csv(.)) %>%
       bind_rows()
     
     data
