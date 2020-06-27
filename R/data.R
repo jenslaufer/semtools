@@ -1,7 +1,7 @@
 load.keywords <- function(.files, .seed = F) {
   tryCatch({
     logging::logdebug("semrush")
-    load.semrush.keywords(.files)
+    load.keywords(.files)
   }, error = function(e) {
     logging::logdebug("google")
     tryCatch({
@@ -21,16 +21,16 @@ load.semrush.keywords <- function(.files) {
                          pattern = ".csv")
   }
   .files %>%
-    map(~ read_csv(.)) %>%
+    map( ~ read_csv(.)) %>%
     bind_rows() %>%
     rename(
       keyword = Keyword,
-      avg.monthly.searches = Volume,
+      volume = Volume,
       competition = `Keyword Difficulty`,
-      bid = `CPC (USD)`,
-      features = `SERP Features`,
-      competitive.density = `Competitive Density`,
-      number.results = `Number of Results`
+      cpc = `CPC (USD)`,
+      serp_features = `SERP Features`,
+      competitive_density = `Competitive Density`,
+      number_results = `Number of Results`
     )
   
 }
@@ -66,31 +66,29 @@ load.google.keywords <- function(.files, .seed = F) {
       rename(
         keyword = Keyword,
         currency = Currency,
-        avg.monthly.searches = Avg..monthly.searches,
-        min.search.volume = Min.search.volume,
-        max.search.volume = Max.search.volume,
-        competition.quality = Competition,
+        volume = Avg..monthly.searches,
+        min_volume = Min.search.volume,
+        max_volume = Max.search.volume,
+        competition_quality = Competition,
         competition = Competition..indexed.value.
       ) %>%
       mutate(
         Top.of.page.bid..low.range. = as.numeric(Top.of.page.bid..low.range.),
         Top.of.page.bid..high.range. = as.numeric(Top.of.page.bid..high.range.),
-        bid = (
+        cpc = (
           Top.of.page.bid..low.range. + Top.of.page.bid..high.range.
         ) /
           2,
-        avg.monthly.searches = ifelse(
-          is.na(avg.monthly.searches),
-          (min.search.volume + max.search.volume) / 2 ,
-          avg.monthly.searches
-        ),
+        volume = ifelse(is.na(volume),
+                        (min_volume + max_volume) / 2 ,
+                        volume),
         competition = as.numeric(competition)
       ) %>%
       mutate(provider = "google") %>%
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map( ~ read_csv(.)) %>%
+      map(~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -121,9 +119,9 @@ load.microsoft.keywords <- function(.files, .seed = F) {
       select(-Ad.impr..share) %>%
       rename(
         keyword = Keyword,
-        avg.monthly.searches = Average.monthly.searches,
+        volume = Average.monthly.searches,
         competition = Competition,
-        bid = Suggested.bid..EUR.
+        cpc = Suggested.bid..EUR.
       ) %>%
       mutate(provider = "microsoft",
              competition = competition * 100)
@@ -134,7 +132,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map( ~ read_csv(.)) %>%
+      map(~ read_csv(.)) %>%
       bind_rows()
     
     data
@@ -165,4 +163,19 @@ split.write <- function(data, folder, num.per.it = 998) {
 
 library(tidyverse)
 logging::basicConfig(level = 50)
-load.keywords("/home/jens/Repos/business-opportunities/data/en/SEMRush/calculators_tools/") %>% colnames()
+data <-
+  load.keywords("/home/jens/Repos/business-opportunities/data/en/SEMRush/calculators_tools/")
+
+# data %>%
+#   gather() %>%
+#   mutate(is_na=is.na(value)) %>%
+#   group_by(key, is_na) %>%
+#   summarise(n=n())
+
+data %>%
+  gather(key = "key", value = "value",-keyword) %>%
+  filter(is.na(value))
+
+data %>%
+  pivot_longer(names_to = "key", values_to = "value", c(-keyword)) %>%
+  filter(is.na(value))
