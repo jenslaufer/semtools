@@ -160,22 +160,3 @@ split.write <- function(data, folder, num.per.it = 998) {
   }
   
 }
-
-library(tidyverse)
-logging::basicConfig(level = 50)
-data <-
-  load.keywords("/home/jens/Repos/business-opportunities/data/en/SEMRush/calculators_tools/")
-
-# data %>%
-#   gather() %>%
-#   mutate(is_na=is.na(value)) %>%
-#   group_by(key, is_na) %>%
-#   summarise(n=n())
-
-data %>%
-  gather(key = "key", value = "value",-keyword) %>%
-  filter(is.na(value))
-
-data %>%
-  pivot_longer(names_to = "key", values_to = "value", c(-keyword)) %>%
-  filter(is.na(value))
