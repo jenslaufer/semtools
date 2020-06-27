@@ -21,13 +21,13 @@ load.semrush.keywords <- function(.files) {
                          pattern = ".csv")
   }
   .files %>%
-    map( ~ read_csv(.)) %>%
+    map(~ read_csv(.)) %>%
     bind_rows() %>%
     rename(
       keyword = Keyword,
       volume = Volume,
       competition = `Keyword Difficulty`,
-      cpc = `CPC`,
+      cpc = `CPC (USD)`,
       serp_features = `SERP Features`,
       competitive_density = `Competitive Density`,
       number_results = `Number of Results`
@@ -88,7 +88,7 @@ load.google.keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -132,7 +132,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
     
     data
