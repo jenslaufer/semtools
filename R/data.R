@@ -27,7 +27,7 @@ load.semrush.keywords <- function(.files) {
       keyword = Keyword,
       volume = Volume,
       competition = `Keyword Difficulty`,
-      cpc = `CPC (USD)`,
+      cpc = `CPC`,
       serp_features = `SERP Features`,
       competitive_density = `Competitive Density`,
       number_results = `Number of Results`
