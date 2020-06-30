@@ -38,6 +38,7 @@ keyword.plot <- function(data,
                          .x.trans = "identity",
                          .y.trans = "identity",
                          .size.trans = "identity",
+                         .color.trans = "identity",
                          .labels = T,
                          x.feature.name,
                          y.feature.name,
@@ -56,6 +57,15 @@ keyword.plot <- function(data,
     scale_y_continuous(trans = .y.trans) +
     scale_size_continuous(trans = .size.trans) +
     labs(title = "{x.feature.name} vs {y.feature.name} vs {size.feature.name} vs {size.feature.name}" %>% glue())
+  
+  
+  if (data %>%
+      select(color.feature.name) %>%
+      map_chr(class) == "numeric") {
+    plot <- plot +
+      scale_colour_gradientn(colours = terrain.colors(10),
+                             trans = .color.trans)
+  }
   
   
   if (.labels) {
