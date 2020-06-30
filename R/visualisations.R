@@ -35,14 +35,14 @@ distribution.qualitative.plot <- function(data, feature.name) {
 
 keyword.plot <- function(data,
                          .alpha = 1,
-                         .x.trans = "log10",
-                         .y.trans = "log10",
+                         .x.trans = "identity",
+                         .y.trans = "identity",
+                         .size.trans = "identity",
                          .labels = T,
-                         x.feature.name = "volume",
-                         y.feature.name = "competition",
-                         color.feature.name = "cpc",
-                         size.feature.name = "cpc_chance",
-                         title = "Volume vs Competition vs CPC") {
+                         x.feature.name,
+                         y.feature.name,
+                         color.feature.name,
+                         size.feature.name) {
   plot <- data %>%
     ggplot(aes(
       x = !!sym(x.feature.name),
@@ -54,8 +54,8 @@ keyword.plot <- function(data,
     ), alpha = .alpha) +
     scale_x_continuous(trans = .x.trans) +
     scale_y_continuous(trans = .y.trans) +
-    scale_size_continuous(guide = F) +
-    labs(title = title)
+    scale_size_continuous(trans = .size.trans) +
+    labs(title = "{x.feature.name} vs {y.feature.name} vs {size.feature.name} vs {size.feature.name}" %>% glue())
   
   
   if (.labels) {
