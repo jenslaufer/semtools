@@ -56,7 +56,7 @@ keyword.plot <- function(data,
     scale_x_continuous(trans = .x.trans) +
     scale_y_continuous(trans = .y.trans) +
     scale_size_continuous(trans = .size.trans) +
-    labs(title = "{x.feature.name} vs {y.feature.name} vs {size.feature.name} vs {size.feature.name}" %>% glue())
+    labs(title = "{x.feature.name} vs {y.feature.name} vs {size.feature.name} vs {color.feature.name}" %>% glue())
   
   
   if (data %>%
