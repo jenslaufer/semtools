@@ -31,7 +31,18 @@ load.semrush.keywords <- function(.files) {
       serp_features = `SERP Features`,
       competitive_density = `Competitive Density`,
       number_results = `Number of Results`
-    )
+    ) %>%
+    mutate(
+      competition_scale = scales::rescale(competition, c(1, 0)),
+      competitive_density_scale = scales::rescale(competitive_density, c(1, 0)),
+      cpc_density_scale = scales::rescale(cpc_density, c(1, 0)),
+      volume_scale = scales::rescale(volume, c(0, 1)),
+      number_results_scale = scales::rescale(number_results, c(0, 1)),
+    ) %>%
+    mutate(overall_rank = rowSums(select(., ends_with("_scale"))) /
+             5) %>%
+    select(-ends_with("_scale"))
+  
   
 }
 
