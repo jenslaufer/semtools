@@ -20,6 +20,7 @@ load.semrush.keywords <- function(.files) {
                          full.names = T,
                          pattern = ".csv")
   }
+  
   .files %>%
     map(~ read_csv(.)) %>%
     bind_rows() %>%
@@ -35,7 +36,7 @@ load.semrush.keywords <- function(.files) {
     mutate(
       competition_scale = scales::rescale(competition, c(1, 0)),
       competitive_density_scale = scales::rescale(competitive_density, c(1, 0)),
-      cpc_density_scale = scales::rescale(cpc_density, c(1, 0)),
+      cpc_scale = scales::rescale(cpc, c(1, 0)),
       volume_scale = scales::rescale(volume, c(0, 1)),
       number_results_scale = scales::rescale(number_results, c(0, 1)),
     ) %>%
