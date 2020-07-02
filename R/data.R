@@ -44,8 +44,8 @@ load.semrush.keywords <- function(.files) {
              5) %>%
     select(-ends_with("_scale")) %>%
     mutate(
-      profit_pontential = profit_for_specified_traffic(volume, cpc, 40, 0.0075, .015),
-      product_costs = product_cost(0.5, cpc, 0.0075)
+      profit_pontential = semtools::profit_for_specified_traffic(volume, cpc, 40, 0.0075, .015),
+      product_costs = semtools::product_cost(0.5, cpc, 0.0075)
     )
   
   
