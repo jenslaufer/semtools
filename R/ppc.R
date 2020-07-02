@@ -29,6 +29,7 @@ profit_for_specified_traffic  <-
     profit(ad_cost, product_cost, cpc, cr)
   }
 
-product_cost_for_profit <- function(profit, ad_budget, cpc, cr) {
-  (profit + ad_budget) / num_of_conversions(ad_budget, cpc, cr)
+product_cost <- function(profit_ad_cost_ratio, cpc, cr) {
+  ad_budget <- 1 / profit_ad_cost_ratio
+  (1 + ad_budget) / num_of_conversions(ad_budget, cpc, cr)
 }
