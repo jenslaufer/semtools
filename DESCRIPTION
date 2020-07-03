@@ -17,3 +17,5 @@ Imports:
     zoo,
     ggrepel,
     ggthemes
+Remotes: git::https://github.com/jenslaufer/ppctools.git
+

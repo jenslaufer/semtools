@@ -22,7 +22,7 @@ load.semrush.keywords <- function(.files) {
   }
   
   .files %>%
-    map(~ read_csv(.)) %>%
+    map( ~ read_csv(.)) %>%
     bind_rows() %>%
     rename(
       keyword = Keyword,
@@ -44,8 +44,8 @@ load.semrush.keywords <- function(.files) {
              5) %>%
     select(-ends_with("_scale")) %>%
     mutate(
-      profit_pontential = semtools::profit_for_specified_traffic(volume, cpc, 40, 0.0075, .015),
-      product_costs = semtools::product_cost(0.5, cpc, 0.0075)
+      profit_potential = ppctools::profit_for_specified_traffic(volume, cpc, 40, 0.0075, .015),
+      product_costs = ppctools::product_cost(0.5, cpc, 0.0075)
     )
   
   
@@ -104,7 +104,7 @@ load.google.keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map( ~ read_csv(.)) %>%
+      map(~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -148,7 +148,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map( ~ read_csv(.)) %>%
+      map(~ read_csv(.)) %>%
       bind_rows()
     
     data
