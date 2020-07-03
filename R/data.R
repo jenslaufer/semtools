@@ -46,9 +46,8 @@ load.semrush.keywords <- function(.files) {
     mutate(
       profit_potential = ppctools::profit_for_specified_traffic(volume, cpc, 40, 0.0075, .015),
       product_costs = ppctools::product_cost(0.5, cpc, 0.0075)
-    )
-  
-  
+    ) %>%
+    mutate(profit_potential = replace_na(profit_potential, 0))
 }
 
 
