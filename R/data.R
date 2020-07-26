@@ -14,6 +14,12 @@ load.keywords <- function(.files, .seed = F) {
   })
 }
 
+load.ahrefs.keywords <- function(.files)  {
+  .files %>%
+    map( ~ read_csv(.)) %>%
+    bind_rows()
+}
+
 load.semrush.keywords <- function(.files) {
   if (dir.exists(.files)) {
     .files <- list.files(path = .files,
