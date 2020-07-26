@@ -5,22 +5,22 @@ load.keywords <- function(.files, .seed = F) {
   }, error = function(e) {
     logging::logdebug("google")
     tryCatch({
-      load.google.keywords(.files, .seed = F)
+      load_google_keywords(.files, .seed = F)
     }, error = function(e) {
       logging::logdebug("microsoft")
-      load.microsoft.keywords(.files, .seed = F)
+      load_microsoft_keywords(.files, .seed = F)
     })
     
   })
 }
 
-load.ahrefs.keywords <- function(.files)  {
+load_ahrefs_keywords <- function(.files)  {
   .files %>%
-    map( ~ read_csv(.)) %>%
+    map(~ read_csv(.)) %>%
     bind_rows()
 }
 
-load.semrush.keywords <- function(.files) {
+load_semrush_keywords <- function(.files) {
   if (dir.exists(.files)) {
     .files <- list.files(path = .files,
                          full.names = T,
@@ -28,7 +28,7 @@ load.semrush.keywords <- function(.files) {
   }
   
   .files %>%
-    map( ~ read_csv(.)) %>%
+    map(~ read_csv(.)) %>%
     bind_rows() %>%
     rename(
       keyword = Keyword,
@@ -57,7 +57,7 @@ load.semrush.keywords <- function(.files) {
 }
 
 
-load.google.keywords <- function(.files, .seed = F) {
+load_google_keywords <- function(.files, .seed = F) {
   cols <-
     c("Avg..monthly.searches",
       "Min.search.volume",
@@ -109,12 +109,12 @@ load.google.keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
   })
 }
 
-load.microsoft.keywords <- function(.files, .seed = F) {
+load_microsoft_keywords <- function(.files, .seed = F) {
   if (dir.exists(.files)) {
     .files <- list.files(path = .files,
                          full.names = T,
@@ -153,7 +153,7 @@ load.microsoft.keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
     
     data
