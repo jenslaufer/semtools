@@ -15,9 +15,12 @@ load.keywords <- function(.files, .seed = F) {
 }
 
 load_ahrefs_keywords <- function(.files)  {
-  .files %>%
+  data <- .files %>%
     map(~ read_csv(.)) %>%
     bind_rows()
+  data %>% 
+    rename(id1=`#`, ReturnRate=`Return Rate`)
+  data
 }
 
 load_semrush_keywords <- function(.files) {
