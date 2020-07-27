@@ -16,10 +16,17 @@ load.keywords <- function(.files, .seed = F) {
 
 load_ahrefs_keywords <- function(.files)  {
   data <- .files %>%
-    map( ~ read_csv(.)) %>%
+    map(~ read_csv(.)) %>%
     bind_rows()
   data <- data %>%
-    rename(id1 = `#` , ReturnRate = `Return Rate`)
+    rename(
+      id1 = `#` ,
+      keyword = Keyword,
+      ReturnRate = `Return Rate`,
+      ParentKeyword = `Parent Keyword`,
+      LastUpdate = `Last Update`,
+      SerpFeatures = `SERP Features`
+    )
   data %>% colnames() %>%  logging::logdebug()
   data
 }
@@ -32,7 +39,7 @@ load_semrush_keywords <- function(.files) {
   }
   
   .files %>%
-    map( ~ read_csv(.)) %>%
+    map(~ read_csv(.)) %>%
     bind_rows() %>%
     rename(
       keyword = Keyword,
@@ -113,7 +120,7 @@ load_google_keywords <- function(.files, .seed = F) {
       as_tibble()
   }, error = function(e) {
     .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
   })
 }
@@ -157,7 +164,7 @@ load_microsoft_keywords <- function(.files, .seed = F) {
     logdebug("error {e} try to load standard csv"  %>% glue())
     data <-
       .files %>%
-      map(~ read_csv(.)) %>%
+      map( ~ read_csv(.)) %>%
       bind_rows()
     
     data
