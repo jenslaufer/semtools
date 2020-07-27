@@ -20,7 +20,7 @@ load_ahrefs_keywords <- function(.files)  {
     bind_rows()
   data <- data %>%
     rename(`#` = id1,  `Return Rate` = ReturnRate)
-  data %>% colnames() %>%  print()
+  data %>% colnames() %>%  logging::logdebug()
   data
 }
 
